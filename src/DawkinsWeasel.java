@@ -1,43 +1,33 @@
-
 import java.util.Arrays;
 import java.util.Random;
 
-import static java.lang.Math.max;
 import static java.lang.Math.random;
 
 public class DawkinsWeasel {
 
     public static void main(String[] args) {
 
-
-
-//      System.out.println(progenitor());
-//        System.out.println(Arrays.toString(firstGeneration()));
-//        String test = "AAAAAAAAAAAAAAAAAAAAAAA";
-//        String mutated = reproduce(test);
-//        System.out.println(mutated);
-//        System.out.println(mutated.length() == test.length());
-        System.out.println(evolution());
+        System.out.println(evolution("METHINKS IT IS LIKE A WEASEL"));
 
     }
 
-    public static String progenitor() {
+    public static String progenitor(int length) {
         Random rd = new Random();
-        String progenitorstring = "";
+        StringBuilder progenitorstring = new StringBuilder();
         String validchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 
-        for (int i = 0; i < 28; i++){
+        for (int i = 0; i < length; i++) {
             char randomcharacter;
-             randomcharacter = validchars.charAt(rd.nextInt(validchars.length()));
-            progenitorstring += randomcharacter;
+            randomcharacter = validchars.charAt(rd.nextInt(validchars.length()));
+            progenitorstring.append(randomcharacter);
         }
 
-        return progenitorstring;
+        return progenitorstring.toString();
     }
 
-    public static String[] firstGeneration() {
+    public static String[] firstGeneration(int length) {
         String[] firstGeneration = new String[100];
-        String progenitor = progenitor();
+        String progenitor = progenitor(length);
         Arrays.fill(firstGeneration, progenitor);
 
         return firstGeneration;
@@ -55,7 +45,7 @@ public class DawkinsWeasel {
                 char randomcharacter;
                 randomcharacter = validchars.charAt(rd.nextInt(validchars.length()));
 
-                parent = parent.substring(0, i) + randomcharacter + parent.substring(i+1);
+                parent = parent.substring(0, i) + randomcharacter + parent.substring(i + 1);
             }
 
         }
@@ -65,7 +55,7 @@ public class DawkinsWeasel {
 
 
     public static String[] reproduceGeneration(String[] oldGeneration) {
-        for(int i = 0; i < oldGeneration.length; i++) {
+        for (int i = 0; i < oldGeneration.length; i++) {
             oldGeneration[i] = reproduce(oldGeneration[i]);
         }
         return oldGeneration;
@@ -75,44 +65,40 @@ public class DawkinsWeasel {
     public static int compare(String child, String target) {
         int score = 0;
         for (int i = 0; i < child.length(); i++) {
-            if(child.charAt(i) == target.charAt(i)) {
-                score ++;
+            if (child.charAt(i) == target.charAt(i)) {
+                score++;
             }
         }
         return score;
     }
 
 
-    //TODO Last steps of scoring match to target string and evolving towards it.
-
-    public static String evolution() {
-        String[] firstGeneration = firstGeneration();
+    public static String evolution(String target) {
+        String[] firstGeneration = firstGeneration(target.length());
         String fittestString = firstGeneration[0];
         int maxScore = 0;
-        String target = "METHINKS IT IS LIKE A WEASEL";
-        String currentString = firstGeneration[0];
+        int count = 0;
 
         while (!fittestString.equals(target)) {
             String[] newGeneration = reproduceGeneration(firstGeneration);
-                for (int i = 0; i < newGeneration.length; i++) {
-                    int currentScore = compare(newGeneration[i], target);
-                    if (currentScore > maxScore) {
-                        maxScore = currentScore;
-                        fittestString = newGeneration[i];
-                        System.out.println(fittestString);
-                    }
+            for (String s : newGeneration) {
+                int currentScore = compare(s, target);
+                if (currentScore > maxScore) {
+                    maxScore = currentScore;
+                    fittestString = s;
+//                        System.out.println(fittestString);
                 }
-            if (maxScore == 28) {
-                return fittestString;
             }
-            else {
+            if (maxScore == target.length()) {
+                System.out.println(count);
+                return fittestString;
+            } else {
                 Arrays.fill(firstGeneration, fittestString);
+                count++;
             }
         }
 
-
-
-    return"you should not get here";
+        return "you should not get here";
 
     }
 

@@ -1,26 +1,21 @@
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static java.util.Arrays.copyOf;
-
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.fail;
+import static java.util.Arrays.copyOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
-
-
-// TODO Could extract length to make tests and methods more flexible/ general purpose.
 public class Tests_DawkinsWeasel {
 
-    String[] firstGeneration = DawkinsWeasel.firstGeneration();
-    String progenitor = DawkinsWeasel.progenitor();
+    String[] firstGeneration = DawkinsWeasel.firstGeneration(28);
+    String progenitor = DawkinsWeasel.progenitor(28);
     String target = "METHINKS IT IS LIKE A WEASEL";
 
     @Test
@@ -42,13 +37,13 @@ public class Tests_DawkinsWeasel {
     // defining the random variable globally (maybe) or finding a way to set the seed in the test as with the python solution.
     @Test
     public void CanGenerateRandomString() {
-        String string1 = DawkinsWeasel.progenitor();
-        String string2 = DawkinsWeasel.progenitor();
-        String string3 = DawkinsWeasel.progenitor();
-        String string4 = DawkinsWeasel.progenitor();
-        String string5 = DawkinsWeasel.progenitor();
+        String string1 = DawkinsWeasel.progenitor(50);
+        String string2 = DawkinsWeasel.progenitor(50);
+        String string3 = DawkinsWeasel.progenitor(50);
+        String string4 = DawkinsWeasel.progenitor(50);
+        String string5 = DawkinsWeasel.progenitor(50);
 
-        assertFalse(string1 == string2 && string2 == string3 && string3 == string4 && string4 == string5);
+        assertFalse(string1.equals(string2) && string2.equals(string3) && string3.equals(string4) && string4.equals(string5));
     }
 
 
@@ -63,16 +58,17 @@ public class Tests_DawkinsWeasel {
             assertEquals(copy, firstGeneration[0]);
         }
     }
+
     // TODO Find way to improve or change this test so does not give false failures. (Fails fairly frequently.)
     // Test is not ideal (due to real chance of false failures), but have not found way to properly set seed so will do for now.
+    // (Increasing length has helped situation)
     @Test
     public void CanMutateAString() {
-        String string1 = DawkinsWeasel.progenitor();
-        String string2 = DawkinsWeasel.progenitor();
-        String string3 = DawkinsWeasel.progenitor();
-        String string4 = DawkinsWeasel.progenitor();
-        String string5 = DawkinsWeasel.progenitor();
-
+        String string1 = DawkinsWeasel.progenitor(100);
+        String string2 = DawkinsWeasel.progenitor(100);
+        String string3 = DawkinsWeasel.progenitor(100);
+        String string4 = DawkinsWeasel.progenitor(100);
+        String string5 = DawkinsWeasel.progenitor(100);
 
         String child1 = DawkinsWeasel.reproduce(string1);
         String child2 = DawkinsWeasel.reproduce(string1);
@@ -80,7 +76,7 @@ public class Tests_DawkinsWeasel {
         String child4 = DawkinsWeasel.reproduce(string1);
         String child5 = DawkinsWeasel.reproduce(string1);
 
-        assertFalse(child1 == string1 || child2 == string2|| child3 == string3|| child4 == string4|| child5 == string5);
+        assertFalse(child1.equals(string1) || child2.equals(string2) || child3.equals(string3) || child4.equals(string4) || child5.equals(string5));
     }
 
     @Test
@@ -97,7 +93,7 @@ public class Tests_DawkinsWeasel {
     public void CanCreateNextGeneration() {
         // Created copy of array so that when function changes the array can still check equality with the old one
         // (as Java is pass by value?)
-        String[] copyOfFirstGeneration = copyOf(firstGeneration,firstGeneration.length);
+        String[] copyOfFirstGeneration = copyOf(firstGeneration, firstGeneration.length);
         String[] newGeneration = DawkinsWeasel.reproduceGeneration(firstGeneration);
         assertThat(newGeneration, not(equalTo(copyOfFirstGeneration)));
 
@@ -108,7 +104,6 @@ public class Tests_DawkinsWeasel {
         String child = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
         int score = DawkinsWeasel.compare(child, target);
         assertEquals(0, score);
-
     }
 
     @Test
@@ -129,9 +124,8 @@ public class Tests_DawkinsWeasel {
 
     @Test
     public void CanEvolveTowardsTarget() {
-        assertEquals(target, DawkinsWeasel.evolution());
+        assertEquals(target, DawkinsWeasel.evolution(target));
     }
-
 
 }
 
